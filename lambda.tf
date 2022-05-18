@@ -1,27 +1,32 @@
+terraform {
+  backend "s3" {
+  }
+}
+data "aws_caller_identity" "current" {}
+###############################
+# AWS Lambda funtion log group#
+###############################
+resource "aws_cloudwatch_log_group" "string_replacer_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.string_replacer.function_name}"
+  retention_in_days = 1
+  lifecycle {
+    prevent_destroy = false
+  }
+}
 ##################################
 # AWS Lambda funtion aws iam role#
 ##################################
 resource "aws_iam_role" "lambda_exec" {
   name = format("%s-%s",var.resource_name_prefix,"iam-role")
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  assume_role_policy = var.lambda_execution_role_assume_policy
 }
-EOF
-}
+
 resource "aws_iam_policy" "function_logging_policy" {
-  name   = "function-logging-policy"
+  depends_on = [
+    aws_cloudwatch_log_group.string_replacer_log_group
+  ]
+  name   = format("%s-%s",var.resource_name_prefix,"function-logging-policy")
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -31,33 +36,14 @@ resource "aws_iam_policy" "function_logging_policy" {
           "logs:PutLogEvents"
         ],
         Effect : "Allow",
-        Resource : "arn:aws:logs:*:*:*"
+        Resource : "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.string_replacer.function_name}:*"
       }
     ]
   })
 }
-# resource "aws_iam_policy" "policy" {
-#   name        = "test-policy"
-#   description = "A test policy"
-
-#   policy = <<EOF
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Action": [
-#         "s3:*"
-#       ],
-#       "Effect": "Allow",
-#       "Resource": "*"
-#     }
-#   ]
-# }
-# EOF
-# }
 
 resource "aws_iam_policy_attachment" "test-attach" {
-  name       = "test-attachment"
+  name       = format("%s-%s",var.resource_name_prefix,"logging-policy-attachment")
   roles      = [aws_iam_role.lambda_exec.name]
   policy_arn = aws_iam_policy.function_logging_policy.arn
 }
@@ -83,16 +69,5 @@ resource "aws_lambda_permission" "apigw" {
   function_name = aws_lambda_function.string_replacer.function_name
   principal     = "apigateway.amazonaws.com"
 
-  # The /*/* portion grants access from any method on any resource
-  # within the API Gateway "REST API".
   source_arn = "${aws_api_gateway_rest_api.string_replacer_api.execution_arn}/*/*"
-}
-
-
-resource "aws_cloudwatch_log_group" "string_replacer_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.string_replacer.function_name}"
-  retention_in_days = 1
-  lifecycle {
-    prevent_destroy = false
-  }
 }
