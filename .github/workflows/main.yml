@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      code_version: 2.0.0/
+      code_version: 1.0.0/
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -41,4 +41,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy dashboard to bucket
-        run: aws s3 cp python_string_replacer.zip s3://string-replacer-artifacts/${{ env.code_version }}
+        run: aws s3 cp python_string_replacer.zip s3://string-replacer-code/${{ env.code_version }}
