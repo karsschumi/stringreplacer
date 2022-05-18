@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      code_version: 1.0.0/
+      code_version: v2.0.0/
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -30,7 +30,7 @@ jobs:
       # zip the code file
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r python_string_replacer.zip python_string_replacer
+          args: zip -qq -r python_string_replacer.zip lambda_function.py
 
       # Runs a set of commands using the runners shell
       - name: Configure AWS Credentials
