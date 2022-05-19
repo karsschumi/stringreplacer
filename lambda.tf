@@ -60,7 +60,12 @@ resource "aws_lambda_function" "string_replacer" {
   runtime = var.lambda_runtime
   timeout = var.lambda_timeout
   role = aws_iam_role.lambda_exec.arn
-
+  
+  environment {
+    variables = {
+      replacer_words = var.replacer_words
+    }
+  }
 }
 
 resource "aws_lambda_permission" "apigw" {

@@ -39,5 +39,6 @@ lambda_description = "lambda does a find and replace for certain words and outpu
 lambda_memory_size = 128
 lambda_timeout = 10
 lambda_runtime = "python3.8"
+replacer_words = "Amazon,Deloitte,Google,Oracle,Microsoft"
 resources_and_methods = {resource_path_part = "stringreplacer", http_method = "POST", integration_http_method = "POST",integration_type = "AWS_PROXY"}
 api_gateway_deployment_stage_name = "prod"
