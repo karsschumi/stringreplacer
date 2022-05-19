@@ -80,6 +80,7 @@ terraform destroy
  * In case you need to pass more replacer words, then append it the string value of variable replacer_words
 &nbsp;
 * to call the API, refer to the outputs api_invoke_url + api_resouce_name and do not forget to pass the x-api-key as the header for which value can be picked up by referring to the output variable api_key_value
+* pass the string that has to be replaced with new values as the request body of the api
 
 # contributing
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!
