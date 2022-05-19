@@ -1,6 +1,6 @@
 # About the Project
 
-This Project will build and api and a backend in Amazon WebServices (AWS) cloud which which can find and replace certain strings.
+This Project will build and public rest api and a backend in Amazon WebServices (AWS) cloud which which can find and replace certain strings.
 ex: 
 Example input: “We really like the new security features of Google Cloud”
 Expected output: “We really like the new security features of Google© Cloud”
@@ -50,17 +50,7 @@ Please follow the instructions in the below steps to run the solution
 * run the below commands to execute terraform
 
 
-# Techinical Notes
- * This solution also uses terraform s3 bucket to store state files.
- * The solution also include the lambda_function code as lambda_function.py
- * This solution also has a CD/CD pipeline build with github action.
- * Incase you need to push any code changes, then follow the below steps
-  1. Make changes to lambda_funcion.py
-  2. make changes to .github/main.yml and change the code push env variable version. This will push the code to the respective S3 path
-  3. use the same verion in the terraform variables lambda_code_s3_bucket_key point the lambda to the new code.
- * In case you need to pass more replacer words, then append it the string value of variable replacer_words
-
-Initiate terraform
+Initialize terraform
 ``` terraform
 terraform init
 ```
@@ -78,6 +68,19 @@ terraform destroy
 ```
 
 &nbsp;
+
+# Techinical Notes
+ * This solution also uses terraform s3 bucket to store state files.
+ * The solution also include the lambda_function code as lambda_function.py
+ * This solution also has a CD/CD pipeline build with github action.
+ * Incase you need to push any code changes, then follow the below steps
+  1. Make changes to lambda_funcion.py
+  2. make changes to .github/main.yml and change the code push env variable version. This will push the code to the respective S3 path
+  3. use the same verion in the terraform variables lambda_code_s3_bucket_key point the lambda to the new code.
+ * In case you need to pass more replacer words, then append it the string value of variable replacer_words
+&nbsp;
+* to call the API, refer to the outputs api_invoke_url + api_resouce_name and do not forget to pass the x-api-key as the header for which value can be picked up by referring to the output variable api_key_value
+
 # contributing
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!
 
